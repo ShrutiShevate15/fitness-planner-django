@@ -1,0 +1,12 @@
+{% extends "admin/change_list.html" %}
+{% load static %}
+
+{% block object-tools %}
+    <div class="object-tools">
+        <ul class="object-tools">
+            <li>
+                <a class="button" href="{% url 'goal_dashboard' %}">Pending Goals Dashboard</a>
+            </li>
+        </ul>
+    </div>
+{% endblock %}

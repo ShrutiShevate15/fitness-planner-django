@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5">
+
+    <!-- Profile Header -->
+    <div class="card shadow-sm mb-4 border-0">
+        <div class="card-body d-flex align-items-center">
+            <img src="{% static 'images/fitness_logo_rounded.png' %}"
+                 class="rounded-circle me-4"
+                 width="90" height="90" alt="Profile">
+
+            <div>
+                <h3 class="mb-0">{{ user.username }}</h3>
+                <span class="badge bg-success mt-2">Active Member</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- LEFT: PROFILE INFO -->
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">Profile Information</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Age:</strong> {{ profile.age }}</p>
+                    <p><strong>Gender:</strong> {{ profile.gender }}</p>
+                    <p><strong>Height:</strong> {{ profile.height_cm }} cm</p>
+                    <p><strong>Weight:</strong> {{ profile.weight_kg }} kg</p>
+                    <p>
+                        <strong>Diet Preference:</strong><br>
+                        <span class="badge bg-info text-dark">
+                            {{ profile.diet_preference }}
+                        </span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: GOAL & PLANS -->
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Fitness Goal</h5>
+
+                    {% if goal %}
+                        <span class="badge bg-warning text-dark">Assigned</span>
+                    {% else %}
+                        <span class="badge bg-secondary">Not Assigned</span>
+                    {% endif %}
+                </div>
+
+                <div class="card-body">
+
+                    {% if goal %}
+                        <h4 class="mb-3 text-capitalize">{{ goal.goal_type }}</h4>
+
+                        <div class="row mb-3">
+                            <div class="col-sm-6">
+                                <p><strong>Current Weight:</strong> {{ goal.current_weight }} kg</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <p><strong>Target Weight:</strong> {{ goal.target_weight }} kg</p>
+                            </div>
+                        </div>
+
+                        <p><strong>Start Date:</strong> {{ goal.start_date }}</p>
+
+                        <!-- Progress -->
+                        <div class="mt-4">
+                            <label class="fw-bold mb-2">Progress</label>
+                            <div class="progress" style="height: 22px;">
+                                <div class="progress-bar bg-success progress-bar-striped progress-bar-animated"
+                                     role="progressbar"
+                                     style="width: {{ progress }}%;"
+                                     aria-valuenow="{{ progress }}"
+                                     aria-valuemin="0"
+                                     aria-valuemax="100">
+                                    {{ progress }}%
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Plans -->
+                        {% if diet_plan %}
+                        <hr>
+                        <h5 class="text-success">🥗 Diet Plan</h5>
+                        <p>{{ diet_plan.meals }}</p>
+                        {% endif %}
+
+                        {% if workout_plan %}
+                        <hr>
+                        <h5 class="text-danger">🏋️ Workout Plan</h5>
+                        <p>{{ workout_plan.workout_description }}</p>
+                        {% endif %}
+
+                    {% else %}
+                        <div class="alert alert-info text-center">
+                            No fitness goal assigned yet.<br>
+                            <small>Please contact admin or set your goal.</small>
+                        </div>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

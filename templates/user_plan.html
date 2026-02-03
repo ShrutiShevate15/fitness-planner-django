@@ -1,0 +1,16 @@
+<{% for day in days %}
+<div>
+    <h4>Day {{ day.day_number }} - {{ day.date }}</h4>
+    {% if day.workout %}
+        <p><strong>Workout:</strong> {{ day.workout.exercises }}</p>
+    {% endif %}
+    {% if day.diet %}
+        <p><strong>Breakfast:</strong> {{ day.diet.breakfast }}</p>
+        <p><strong>Mid-Morning Snack:</strong> {{ day.diet.mid_morning_snack }}</p>
+        <p><strong>Lunch:</strong> {{ day.diet.lunch }}</p>
+        <p><strong>Evening Snack:</strong> {{ day.diet.evening_snack }}</p>
+        <p><strong>Dinner:</strong> {{ day.diet.dinner }}</p>
+    {% endif %}
+</div>
+<hr>
+{% endfor %}

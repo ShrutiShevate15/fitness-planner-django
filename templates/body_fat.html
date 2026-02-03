@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Body Fat Index{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+
+        <div class="card shadow p-4">
+            <h3 class="text-center mb-3">Body Fat Index Calculator</h3>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label class="form-label">Height (cm)</label>
+                    <input type="number" step="0.1" name="height" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Weight (kg)</label>
+                    <input type="number" step="0.1" name="weight" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Age</label>
+                    <input type="number" name="age" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Gender</label>
+                    <select name="gender" class="form-select" required>
+                        <option value="">Select</option>
+                        <option value="1">Male</option>
+                        <option value="0">Female</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-dark w-100">
+                    Calculate Body Fat %
+                </button>
+            </form>
+
+            {% if body_fat %}
+                <div class="alert alert-success text-center mt-4">
+                    <h5>Your Body Fat Percentage</h5>
+                    <strong>{{ body_fat }}%</strong>
+                </div>
+            {% endif %}
+
+        </div>
+
+    </div>
+</div>
+{% endblock %}

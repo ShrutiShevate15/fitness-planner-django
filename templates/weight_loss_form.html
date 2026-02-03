@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Weight Loss Plan{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h2 class="mb-4 text-center">Set Your Weight Loss Goal</h2>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="card shadow-sm p-4">
+        <form method="post" novalidate>
+            {% csrf_token %}
+            <div class="row mb-3">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Current Weight (kg)</label>
+                    {{ form.current_weight }}
+                    {% if form.current_weight.errors %}
+                        <div class="text-danger">{{ form.current_weight.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Target Weight (kg)</label>
+                    {{ form.target_weight }}
+                    {% if form.target_weight.errors %}
+                        <div class="text-danger">{{ form.target_weight.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Duration (days)</label>
+                    {{ form.duration_days }}
+                    {% if form.duration_days.errors %}
+                        <div class="text-danger">{{ form.duration_days.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Diet Preference</label>
+                    {{ form.diet_type }}
+                    {% if form.diet_type.errors %}
+                        <div class="text-danger">{{ form.diet_type.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-danger btn-lg">Generate Weight Loss Plan</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

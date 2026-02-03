@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}Your Weight Loss Plan{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h2 class="mb-4 text-center">Your Weight Loss Plan</h2>
+
+    {% if goal %}
+        <div class="card shadow-sm p-4 mb-4">
+            <h4 class="mb-3">Goal Summary</h4>
+            <p><strong>Start Weight:</strong> {{ goal.current_weight }} kg</p>
+            <p><strong>Target Weight:</strong> {{ goal.target_weight }} kg</p>
+            <p><strong>Duration:</strong> {{ goal.duration_days }} days</p>
+            {% if goal.start_date and goal.end_date %}
+                <p><strong>Timeline:</strong> {{ goal.start_date }} → {{ goal.end_date }}</p>
+            {% endif %}
+        </div>
+
+        <!-- Workout Plan -->
+        <div class="card shadow-sm p-4 mb-4">
+            <h4>Workout Plan</h4>
+            {% if workouts %}
+                <ul class="list-group">
+                    {% for workout in workouts %}
+                        <li class="list-group-item">
+                            <strong>{{ workout.title }}</strong>: {{ workout.workout_description }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No workout plan assigned yet.</p>
+            {% endif %}
+        </div>
+
+        <!-- Diet Plan -->
+        <div class="card shadow-sm p-4 mb-4">
+            <h4>Diet Plan</h4>
+            {% if diets %}
+                <ul class="list-group">
+                    {% for diet in diets %}
+                        <li class="list-group-item">
+                            <strong>{{ diet.title }}</strong> ({{ diet.get_diet_type_display }}): {{ diet.meals }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No diet plan assigned yet.</p>
+            {% endif %}
+        </div>
+
+        <!-- Daily Schedule -->
+        {% if schedule %}
+            <div class="card shadow-sm p-4 mb-4">
+                <h4>Daily Schedule</h4>
+                <div class="list-group">
+                    {% for day in schedule %}
+                        <div class="list-group-item mb-2">
+                            <div class="d-flex justify-content-between">
+                                <strong>{{ day.date }}</strong> — {% if day.is_workout %}Workout Day{% else %}Rest/Recovery{% endif %}
+                            </div>
+                            {% if day.is_workout and day.workout %}
+                                <div class="mt-2">
+                                    <h5>{{ day.workout.title }}</h5>
+                                    <p>{{ day.workout.description }}</p>
+                                    <p><small>Level: {{ day.workout.level }}</small></p>
+                                </div>
+                            {% elif not day.is_workout %}
+                                <div class="mt-2">
+                                    <p>Active recovery: light walk, stretching, or mobility exercises.</p>
+                                </div>
+                            {% endif %}
+                            {% if day.meals %}
+                                <div class="mt-2">
+                                    <h6>Meals</h6>
+                                    <ul>
+                                        {% for meal in day.meals %}
+                                            <li>
+                                                <strong>{{ meal.name }}</strong>{% if meal.calories %} — {{ meal.calories }} kcal{% endif %}
+                                                <div>{{ meal.description }}</div>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+    {% endif %}
+</div>
+{% endblock %}

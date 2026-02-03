@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="container my-5">
+
+  <!-- PAGE HEADER -->
+  <div class="text-center mb-4">
+    <h1 class="display-5">Weight Gain Planner</h1>
+    <p class="lead text-muted">Personalized workout & diet plan based on your goal.</p>
+  </div>
+
+  <!-- ERROR ALERT -->
+  {% if error %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <i class="bi bi-exclamation-triangle-fill"></i> {{ error }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  {% endif %}
+
+  <!-- USER INPUT FORM -->
+  <div class="card shadow-sm mb-5 p-4">
+    <h4 class="mb-3">Set Your Goal</h4>
+    <form method="post">
+      {% csrf_token %}
+      <div class="row g-3">
+        <div class="col-md-3">
+          <label class="form-label">Height (cm)</label>
+          <input name="height_cm" class="form-control" type="number" step="0.1" value="{{ profile.height_cm|default:'' }}">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Current Weight (kg)</label>
+          <input name="weight_kg" class="form-control" type="number" step="0.1" value="{{ profile.weight_kg|default:'' }}">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Target Gain (kg)</label>
+          <input name="target_gain_kg" class="form-control" type="number" step="0.1" placeholder="e.g., 5">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Duration (weeks)</label>
+          <input name="duration_weeks" class="form-control" type="number" value="8" min="1">
+        </div>
+      </div>
+
+      <div class="row g-3 mt-3">
+        <div class="col-md-4">
+          <label class="form-label">Training Level</label>
+          <select name="level" class="form-select">
+            <option value="beginner">Beginner (3 sessions/week)</option>
+            <option value="intermediate">Intermediate (4 sessions/week)</option>
+            <option value="advanced">Advanced (5 sessions/week)</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Diet Preference</label>
+          <select name="diet_type" class="form-select">
+            <option value="">Use profile preference</option>
+            <option value="veg">Vegetarian</option>
+            <option value="nonveg">Non-Vegetarian</option>
+            <option value="vegan">Vegan</option>
+          </select>
+        </div>
+        <div class="col-md-4 d-flex align-items-end">
+          <button class="btn btn-primary w-100"><i class="bi bi-rocket-fill"></i> Generate Plan</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- GENERATED PLAN -->
+  {% if generated %}
+  <div class="mb-5">
+    <h3 class="mb-3">Goal Summary</h3>
+    <div class="card shadow-sm p-4 mb-4">
+      <p><strong>Start Weight:</strong> {{ goal.start_weight }} kg</p>
+      <p><strong>Target Weight:</strong> {{ goal.target_weight }} kg</p>
+      <p><strong>Duration:</strong> {{ goal.duration_weeks }} weeks ({{ goal.start_date }} → {{ goal.end_date }})</p>
+      <p><strong>Workout Sessions:</strong> {{ total_workout_sessions }} ({{ sessions_per_week }}/week)</p>
+
+      <!-- Progress Bar -->
+      <div class="progress mt-3" style="height: 25px;">
+        <div class="progress-bar bg-success" role="progressbar" style="width: {{ progress }}%;" aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100">
+          {{ progress }}%
+        </div>
+      </div>
+    </div>
+
+    <!-- WORKOUT PLAN -->
+    {% if workout_plan %}
+    <div class="card shadow-sm p-4 mb-4">
+      <h4><i class="bi bi-dumbbell"></i> Workout Plan</h4>
+      <h5>{{ workout_plan.title }}</h5>
+      <p><strong>Level:</strong> {{ workout_plan.level|title }}</p>
+      <p>{{ workout_plan.workout_description }}</p>
+    </div>
+    {% endif %}
+
+    <!-- DIET PLAN -->
+    {% if diet_plan %}
+    <div class="card shadow-sm p-4 mb-4">
+      <h4><i class="bi bi-basket"></i> Diet Plan ({{ diet_plan.get_diet_type_display }})</h4>
+      <h5>{{ diet_plan.title }}</h5>
+      <p><strong>Calories/day:</strong> {{ diet_plan.calories }}</p>
+      <p>{{ diet_plan.meals }}</p>
+    </div>
+    {% endif %}
+
+    <!-- DAILY SCHEDULE -->
+    <div class="card shadow-sm p-4 mb-4">
+      <h4><i class="bi bi-calendar-check"></i> Daily Schedule</h4>
+      <div class="list-group">
+        {% for day in schedule %}
+        <div class="list-group-item mb-2">
+          <div class="d-flex justify-content-between align-items-center">
+            <strong>{{ day.date }}</strong>
+            {% if day.is_workout %}
+            <span class="badge bg-success">Workout</span>
+            {% else %}
+            <span class="badge bg-secondary">Rest</span>
+            {% endif %}
+          </div>
+
+          {% if day.is_workout and day.workout %}
+          <div class="mt-2">
+            <h5>{{ day.workout.title }}</h5>
+            <p>{{ day.workout.description }}</p>
+            <small>Level: {{ day.workout.level }}</small>
+          </div>
+          {% endif %}
+
+          {% if day.meals %}
+          <div class="mt-2">
+            <h6>Meals</h6>
+            <ul>
+              {% for meal in day.meals %}
+              <li><strong>{{ meal.name }}</strong>{% if meal.calories %} — {{ meal.calories }} kcal{% endif %} <div>{{ meal.description }}</div></li>
+              {% endfor %}
+            </ul>
+          </div>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

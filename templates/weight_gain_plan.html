@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}Your Weight Gain Plan{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+
+  <div class="text-center mb-5">
+    <h1 class="display-5">Your Weight Gain Plan</h1>
+    <p class="lead text-muted">Follow your personalized workout & diet plan to achieve your goals.</p>
+  </div>
+
+  <!-- PLAN SUMMARY -->
+  <div class="card shadow-sm p-4 mb-5">
+    <h4 class="mb-3">Plan Summary</h4>
+    <p><strong>Current Weight:</strong> {{ goal.current_weight }} kg</p>
+    <p><strong>Target Weight:</strong> {{ goal.target_weight }} kg</p>
+    <p><strong>Duration:</strong> {{ goal.duration_days }} days</p>
+    {% if goal.start_date and goal.end_date %}
+    <p><strong>Timeline:</strong> {{ goal.start_date }} → {{ goal.end_date }}</p>
+    {% endif %}
+    {% if goal.progress %}
+    <div class="progress mt-3" style="height: 25px;">
+      <div class="progress-bar bg-success" role="progressbar" style="width: {{ goal.progress }}%;" aria-valuenow="{{ goal.progress }}" aria-valuemin="0" aria-valuemax="100">
+        {{ goal.progress }}%
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- WORKOUT PLAN -->
+  {% if goal.workout_plan %}
+  <div class="card shadow-sm p-4 mb-4">
+    <h4><i class="bi bi-dumbbell"></i> Workout Plan</h4>
+    <h5>{{ goal.workout_plan.name }}</h5>
+    <p><strong>Level:</strong> {{ goal.workout_plan.level|title }}</p>
+    <p>{{ goal.workout_plan.description }}</p>
+  </div>
+  {% endif %}
+
+  <!-- DIET PLAN -->
+  {% if goal.diet_plan %}
+  <div class="card shadow-sm p-4 mb-4">
+    <h4><i class="bi bi-basket"></i> Diet Plan ({{ goal.diet_plan.get_diet_type_display }})</h4>
+    <h5>{{ goal.diet_plan.name }}</h5>
+    <p><strong>Calories/day:</strong> {{ goal.diet_plan.calories }}</p>
+    <p>{{ goal.diet_plan.meals }}</p>
+  </div>
+  {% endif %}
+
+  <!-- DAILY SCHEDULE -->
+  {% if schedule %}
+  <div class="card shadow-sm p-4 mb-5">
+    <h4><i class="bi bi-calendar-check"></i> Daily Schedule</h4>
+    <div class="list-group">
+      {% for day in schedule %}
+      <div class="list-group-item mb-2">
+        <div class="d-flex justify-content-between align-items-center">
+          <strong>{{ day.date }}</strong>
+          {% if day.is_workout %}
+          <span class="badge bg-success">Workout</span>
+          {% else %}
+          <span class="badge bg-secondary">Rest</span>
+          {% endif %}
+        </div>
+
+        {% if day.is_workout and day.workout %}
+        <div class="mt-2">
+          <h6>{{ day.workout.title }}</h6>
+          <p>{{ day.workout.description }}</p>
+          <small>Level: {{ day.workout.level }}</small>
+        </div>
+        {% endif %}
+
+        {% if day.meals %}
+        <div class="mt-2">
+          <h6>Meals</h6>
+          <ul>
+            {% for meal in day.meals %}
+            <li>
+              <strong>{{ meal.name }}</strong>{% if meal.calories %} — {{ meal.calories }} kcal{% endif %}
+              <div>{{ meal.description }}</div>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="text-center mt-4">
+    <a href="{% url 'weight_gain' %}" class="btn btn-outline-primary">Back to Dashboard</a>
+  </div>
+
+</div>
+{% endblock %}

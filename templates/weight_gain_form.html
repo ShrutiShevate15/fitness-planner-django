@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Weight Gain Request{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+
+  <div class="text-center mb-5">
+    <h1 class="display-5">Weight Gain Planner</h1>
+    <p class="lead text-muted">Submit your goal and receive a personalized plan.</p>
+  </div>
+
+  <div class="card shadow-sm p-4">
+    <h4 class="mb-4">Set Your Goal</h4>
+    <form method="POST">
+      {% csrf_token %}
+      {{ form.as_p }}
+
+      <div class="d-grid mt-3">
+        <button type="submit" class="btn btn-primary btn-lg">
+          <i class="bi bi-rocket-fill"></i> Submit Request
+        </button>
+      </div>
+    </form>
+  </div>
+
+</div>
+{% endblock %}
+
